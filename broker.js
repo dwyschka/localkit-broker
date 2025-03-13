@@ -69,17 +69,21 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     const serialNumber = match[1];
 
-    const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    try {
+        const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
 
-    const data = await result.json();
+        const data = await result.json();
 
-    clients[client.id] = data.data.topics;
+        clients[client.id] = data.data.topics;
 
+    } catch (error) {
+        console.log('Error fetching topics', error);
+    }
     callback(null, true);
 };
 
