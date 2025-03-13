@@ -13,7 +13,7 @@ const config = {
     // Basic MQTT settings
     port: 1883,
     wsPort: 8888,
-    host: '10.10.48.177',
+    host: '0.0.0.0',
     authenticate: false,  // Set to true to enable authentication
 
     // SSL/TLS configuration
@@ -69,7 +69,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     const serialNumber = match[1];
 
-    const result = await fetch(`http://10.10.46.39/6/api/topics/${serialNumber}`, {
+    const result = await fetch(`${process.ENV.LOCALKIT}/6/api/topics/${serialNumber}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
