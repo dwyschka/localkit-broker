@@ -136,11 +136,11 @@ async function sendConnected(clientId, state) {
         const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             },
-            body: {
-                'connected': state
-            }
+            body: JSON.stringify({
+                'connected': true
+            })
         });
     } catch(error) {
         console.log('Error sending connected', error);
