@@ -134,7 +134,7 @@ async function sendConnected(clientId, state) {
         cId = cId[0];
         const serialNumber = cId.match(/(\d{8}L\d+)$/)[1];
         const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
