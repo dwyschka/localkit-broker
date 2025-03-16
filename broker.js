@@ -88,6 +88,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 };
 
 aedes.on('client', function(client) {
+    sendConnected(client.id, true);
     console.log(`Client connected: ${client.id}`);
 })
 aedes.on('publish', (packet, client) => {
@@ -113,10 +114,36 @@ aedes.on('publish', (packet, client) => {
 });
 
 aedes.on('clientDisconnect', (client) => {
+    sendConnected(client.id, false);
     delete clients[client.id];
 });
 
 aedes.on('connectionError', function(client, err) {
     console.log('Connection Error: ', err.message);
 });
+
+
+async function sendConnected(clientId, state) {
+
+    try {
+        let cId = clientId.split('|');
+        if (cId.length < 2) {
+            return;
+        }
+
+        cId = cId[0];
+        const serialNumber = cId.match(/(\d{8}L\d+)$/)[1];
+    } catch(error) {
+        return;
+    }
+    const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: {
+            'connected': state
+        }
+    });
+}
 
