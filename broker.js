@@ -133,17 +133,18 @@ async function sendConnected(clientId, state) {
 
         cId = cId[0];
         const serialNumber = cId.match(/(\d{8}L\d+)$/)[1];
+        const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: {
+                'connected': state
+            }
+        });
     } catch(error) {
-        return;
+        console.log('Error sending connected', error);
     }
-    const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: {
-            'connected': state
-        }
-    });
+
 }
 
