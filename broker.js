@@ -79,6 +79,9 @@ aedes.authenticate = async (client, username, password, callback) => {
 
         const data = await result.json();
 
+        console.log('Received Device', client.id);
+        console.log('Set Topics', data.data.topics);
+
         clients[client.id] = data.data.topics;
 
     } catch (error) {
