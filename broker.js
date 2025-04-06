@@ -53,21 +53,27 @@ process.on('SIGINT', handleExit);
 process.on('SIGTERM', handleExit);
 
 aedes.authenticate = async (client, username, password, callback) => {
-    const deviceId = username.split('&');
+    try {
+        const deviceId = username.split('&');
 
-    if (deviceId.length !== 2) {
-        return callback(null, true);
+        if (deviceId.length !== 2) {
+            return callback(null, true);
+        }
+
+        const regex = /(\d{8}L\d+)$/;
+        const match = deviceId[0].match(regex);
+
+        if (!match) {
+            console.log('Cant extract serial number from', username);
+            return callback(null, true)
+        }
+
+        const serialNumber = match[1];
+
+    } catch(error) {
+        console.log('Error auth', error);
+
     }
-
-    const regex = /(\d{8}L\d+)$/;
-    const match = deviceId[0].match(regex);
-
-    if (!match) {
-        console.log('Cant extract serial number from', username);
-        return callback(null, true)
-    }
-
-    const serialNumber = match[1];
 
     try {
         const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
