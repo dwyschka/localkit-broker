@@ -54,28 +54,9 @@ process.on('SIGTERM', handleExit);
 
 aedes.authenticate = async (client, username, password, callback) => {
     try {
-        const deviceId = username.split('&');
+        const match = username.match(/d_(\w)(\d)_(\d+.\d+)/);
+        const serialNumber = match[3];
 
-        if (deviceId.length !== 2) {
-            return callback(null, true);
-        }
-
-        const regex = /(\d{8}L\d+)$/;
-        const match = deviceId[0].match(regex);
-
-        if (!match) {
-            console.log('Cant extract serial number from', username);
-            return callback(null, true)
-        }
-
-        const serialNumber = match[1];
-
-    } catch(error) {
-        console.log('Error auth', error);
-
-    }
-
-    try {
         const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
             method: 'GET',
             headers: {
@@ -89,7 +70,7 @@ aedes.authenticate = async (client, username, password, callback) => {
         console.log('Set Topics', data.data.topics);
 
         clients[client.id] = data.data.topics;
-
+        
     } catch (error) {
         console.log('Error fetching topics', error);
     }
