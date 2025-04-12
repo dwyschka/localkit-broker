@@ -104,8 +104,7 @@ aedes.on('publish', (packet, client) => {
 });
 
 aedes.on('clientDisconnect', (client) => {
-    sendConnected(client.id, false);
-    delete clients[client.id];
+    console.log(`Client Disconnected : ${client.id}`);
 });
 
 aedes.on('connectionError', function(client, err) {
