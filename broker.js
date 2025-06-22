@@ -72,7 +72,7 @@ aedes.authenticate = async (client, username, password, callback) => {
         clients[client.id] = data.data.topics;
         
     } catch (error) {
-        console.log('Error fetching topics', error);
+        console.log('Error fetching topics', username, client.id);
     }
     callback(null, true);
 };
