@@ -78,7 +78,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 };
 
 aedes.on('client', async function(client) {
-    await sendConnectionStatus(client.id, false);
+    await sendConnectionStatus(client.id, true);
     console.log(`Client connected: ${client.id}`);
 })
 aedes.on('publish', (packet, client) => {
