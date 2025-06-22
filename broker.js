@@ -78,7 +78,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 };
 
 aedes.on('client', function(client) {
-    sendConnected(client.id, true);
+    sendConnectionStatus(client.id, false);
     console.log(`Client connected: ${client.id}`);
 })
 aedes.on('publish', (packet, client) => {
@@ -105,6 +105,7 @@ aedes.on('publish', (packet, client) => {
 
 aedes.on('clientDisconnect', (client) => {
     console.log(`Client Disconnected : ${client.id}`);
+    sendConnectionStatus(client.id, false);
 });
 
 aedes.on('connectionError', function(client, err) {
@@ -112,7 +113,7 @@ aedes.on('connectionError', function(client, err) {
 });
 
 
-async function sendConnected(clientId, state) {
+async function sendConnectionStatus(clientId, state) {
 
     try {
         let cId = clientId.split('|');
@@ -128,7 +129,7 @@ async function sendConnected(clientId, state) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                'connected': true
+                'connected': state
             })
         });
     } catch(error) {
