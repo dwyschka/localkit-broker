@@ -91,7 +91,6 @@ aedes.on('publish', (packet, client) => {
 
     topicInClient.forEach((value, index) => {
         const targetClient = aedes.clients[value];
-        console.log('got', value, packet);
         targetClient.publish({
             topic: packet.topic,
             payload: packet.payload,
@@ -123,7 +122,7 @@ async function sendConnectionStatus(clientId, state) {
         }
 
         cId = cId[0];
-        const serialNumber = cId.match(/(\d{8}L\d+)$/)[1];
+        const serialNumber = cId.match(/(\d{8}[a-zA-Z]\d+)$/)[1];
         const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
             method: 'POST',
             headers: {
