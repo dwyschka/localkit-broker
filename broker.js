@@ -1,6 +1,5 @@
-
 import Aedes from 'aedes';
-import { loadCertificates, exit } from './lib/helper.js';
+import {loadCertificates, exit} from './lib/helper.js';
 import * as tls from "node:tls";
 import fetch from 'node-fetch';
 import ClientManager from './emitter.js';
@@ -43,7 +42,7 @@ const server = tls.createServer({
     rejectUnauthorized: config.ssl.rejectUnauthorized
 }, aedes.handle);
 
-server.listen(config.ssl.port, config.host, function() {
+server.listen(config.ssl.port, config.host, function () {
     console.log(`MQTT over SSL/TLS server listening on port ${config.ssl.port}`);
 });
 
@@ -72,14 +71,14 @@ aedes.authenticate = async (client, username, password, callback) => {
         console.log('Set Topics', data.data.topics);
 
         clients[client.id] = data.data.topics;
-        
+
     } catch (error) {
         console.log('Error fetching topics', username, client.id);
     }
     callback(null, true);
 };
 
-aedes.on('client', async function(client) {
+aedes.on('client', async function (client) {
     await sendConnectionStatus(client, true);
     console.log(`Client connected: ${client.id}`);
 })
@@ -99,7 +98,8 @@ aedes.on('publish', (packet, client) => {
             qos: packet.qos,
             retain: packet.retain,
             dup: packet.dup,
-        }, () => {});
+        }, () => {
+        });
     });
 
 });
@@ -109,7 +109,7 @@ aedes.on('clientDisconnect', async (client) => {
     console.log(`Client Disconnected : ${client.id}`);
 });
 
-aedes.on('connectionError', function(client, err) {
+aedes.on('connectionError', function (client, err) {
     console.log('Connection Error: ', err.message);
 });
 
@@ -118,7 +118,7 @@ connectedClients.on('clientAdded', (client, allClients) => {
         topic: 'localkit/clients',
         payload: JSON.stringify(allClients.map(c => c.id)),
         qos: 1,
-        retain: false,
+        retain: true,
         dup: false,
     }, (err) => console.log(err));
 });
@@ -127,13 +127,13 @@ connectedClients.on('clientRemoved', (client, allClients) => {
         topic: 'localkit/clients',
         payload: JSON.stringify(allClients.map(c => c.id)),
         qos: 1,
-        retain: false,
+        retain: true,
         dup: false,
     }, (err) => console.log(err));
 })
 
 async function sendConnectionStatus(client, state) {
-    if(state) {
+    if (state) {
         connectedClients.addClient(client)
     } else {
         connectedClients.removeClient(client)
