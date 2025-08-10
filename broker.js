@@ -127,8 +127,8 @@ connectedClients.on('clientRemoved', (client, allClients) => {
         topic: 'localkit/clients',
         payload: JSON.stringify(allClients.map(c => c.id)),
         qos: 1,
-        retain: true,
-        dup: false,
+        retain: false,
+        dup: true,
     }, (err) => console.log(err));
 })
 
