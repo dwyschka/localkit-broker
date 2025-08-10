@@ -3,11 +3,13 @@ import Aedes from 'aedes';
 import { loadCertificates, exit } from './lib/helper.js';
 import * as tls from "node:tls";
 import fetch from 'node-fetch';
+import ClientManager from './emitter.js';
 
 const aedes = new Aedes({
     protocolVersion: 4,
 });
 
+const connectedClients = new ClientManager();
 // Configuration
 const config = {
     // Basic MQTT settings
@@ -78,7 +80,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 };
 
 aedes.on('client', async function(client) {
-    await sendConnectionStatus(client.id, true);
+    await sendConnectionStatus(client, true);
     console.log(`Client connected: ${client.id}`);
 })
 aedes.on('publish', (packet, client) => {
@@ -103,7 +105,7 @@ aedes.on('publish', (packet, client) => {
 });
 
 aedes.on('clientDisconnect', async (client) => {
-    await sendConnectionStatus(client.id, false);
+    await sendConnectionStatus(client, false);
     console.log(`Client Disconnected : ${client.id}`);
 });
 
@@ -111,30 +113,30 @@ aedes.on('connectionError', function(client, err) {
     console.log('Connection Error: ', err.message);
 });
 
+connectedClients.on('clientAdded', (client, allClients) => {
+    aedes.publish({
+        topic: 'localkit/clients',
+        payload: JSON.stringify(allClients.map(c => c.id)),
+        qos: 1,
+        retain: false,
+        dup: false,
+    }, (err) => console.log(err));
+});
+connectedClients.on('clientRemoved', (client, allClients) => {
+    aedes.publish({
+        topic: 'localkit/clients',
+        payload: JSON.stringify(allClients.map(c => c.id)),
+        qos: 1,
+        retain: false,
+        dup: false,
+    }, (err) => console.log(err));
+})
 
-async function sendConnectionStatus(clientId, state) {
-
-    console.log('Sending connection status', clientId, state);
-    try {
-        let cId = clientId.split('|');
-        if (cId.length < 2) {
-            return;
-        }
-
-        cId = cId[0];
-        const serialNumber = cId.match(/(\d{8}[a-zA-Z]\d+)$/)[1];
-        const result = await fetch(`${process.env.LOCALKIT}/6/api/connected/${serialNumber}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                'connected': state
-            })
-        });
-    } catch(error) {
-        console.log('Error sending connected', error);
+async function sendConnectionStatus(client, state) {
+    if(state) {
+        connectedClients.addClient(client)
+    } else {
+        connectedClients.removeClient(client)
     }
-
 }
 
