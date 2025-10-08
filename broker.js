@@ -54,6 +54,8 @@ process.on('SIGINT', handleExit);
 process.on('SIGTERM', handleExit);
 
 aedes.authenticate = async (client, username, password, callback) => {
+    console.log('AUTH CALLBACK', username, password);
+
     try {
         const match = username.match(/d_(\w)(\d)_(\d+.\d+)/);
         const serialNumber = match[3];
