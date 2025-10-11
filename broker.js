@@ -8,12 +8,8 @@ const aedes = new Aedes({
     protocolVersion: 4,
 });
 
-let serialNumberRegex = 'd_(.{2,4})_(?<serialNumber>(\\d+.\\d+))';
+const regEx = /d_(.{2,4})_(?<serialNumber>(\d+.\d+))/;
 
-if(process.env.SERIALNUMBER_REGEX !== undefined) {
-    serialNumberRegex = process.env.SERIALNUMBER_REGEX;
-}
-const regEx = new RegExp(serialNumberRegex, 'g');
 
 const connectedClients = new ClientManager();
 // Configuration
@@ -64,6 +60,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     try {
         const match = username.match(regEx);
+        console.log(match, regEx, match.groups);
         const serialNumber = match.groups.serialNumber;
 
         if(serialNumber === undefined) {
