@@ -60,7 +60,6 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     try {
         const match = username.match(regEx);
-        console.log(match, regEx, match.groups);
         const serialNumber = match.groups.serialNumber;
 
         if(serialNumber === undefined) {
