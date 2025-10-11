@@ -54,11 +54,11 @@ process.on('SIGINT', handleExit);
 process.on('SIGTERM', handleExit);
 
 aedes.authenticate = async (client, username, password, callback) => {
-    console.log('AUTH CALLBACK', username, password);
 
     try {
         const match = username.match(/d_(\w)(\d)_(\d+.\d+)/);
         const serialNumber = match[3];
+        console.log(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`);
 
         const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
             method: 'GET',
@@ -76,6 +76,7 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     } catch (error) {
         console.log('Error fetching topics', username, client.id);
+        console.log(error);
     }
     callback(null, true);
 };
