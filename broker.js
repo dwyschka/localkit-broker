@@ -63,8 +63,14 @@ aedes.authenticate = async (client, username, password, callback) => {
 
     try {
         const match = username.match(regEx);
-        console.log(match, regEx);
-        const serialNumber = match[3];
+        const serialNumber = match.groups.serialNumber;
+
+        if(serialNumber === undefined) {
+            console.log('No serial number found in username');
+            callback(null, true);
+            return;
+        }
+
         console.log(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`);
 
         const result = await fetch(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`, {
