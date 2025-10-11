@@ -7,12 +7,12 @@ import ClientManager from './emitter.js';
 const aedes = new Aedes({
     protocolVersion: 4,
 });
-const regEx = process.env.SERIALNUMBER_REGEX;
 
-if(regEx === undefined) {
+if(process.env.SERIALNUMBER_REGEX === undefined) {
     console.log('No SERIALNUMBER_REGEX found in environment variables');
     process.exit(1);
 }
+const regEx = new RegExp(process.env.SERIALNUMBER_REGEX, 'g');
 
 const connectedClients = new ClientManager();
 // Configuration
