@@ -8,11 +8,12 @@ const aedes = new Aedes({
     protocolVersion: 4,
 });
 
-if(process.env.SERIALNUMBER_REGEX === undefined) {
-    console.log('No SERIALNUMBER_REGEX found in environment variables');
-    process.exit(1);
+let serialNumberRegex = 'd_(.{2,4})_(?<serialNumber>(\\d+.\\d+))';
+
+if(process.env.SERIALNUMBER_REGEX !== undefined) {
+    serialNumberRegex = process.env.SERIALNUMBER_REGEX;
 }
-const regEx = new RegExp(process.env.SERIALNUMBER_REGEX, 'g');
+const regEx = new RegExp(serialNumberRegex, 'g');
 
 const connectedClients = new ClientManager();
 // Configuration
