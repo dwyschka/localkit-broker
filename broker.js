@@ -7,6 +7,7 @@ import ClientManager from './emitter.js';
 const aedes = new Aedes({
     protocolVersion: 4,
 });
+const regEx = process.exit?.SERIALNUMBER_REGEX;
 
 const connectedClients = new ClientManager();
 // Configuration
@@ -56,7 +57,7 @@ process.on('SIGTERM', handleExit);
 aedes.authenticate = async (client, username, password, callback) => {
 
     try {
-        const match = username.match(/d_(\w)(\d)_(\d+.\d+)/);
+        const match = username.match(regEx);
         const serialNumber = match[3];
         console.log(`${process.env.LOCALKIT}/6/api/topics/${serialNumber}`);
 
