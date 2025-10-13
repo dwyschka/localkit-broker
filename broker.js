@@ -105,6 +105,10 @@ aedes.on('publish', (packet, client) => {
 
     topicInClient.forEach((value, index) => {
         const targetClient = aedes.clients[value];
+        if (!targetClient) {
+            console.log(`Client ${value} not found`);
+            return;
+        }
         targetClient.publish({
             topic: packet.topic,
             payload: packet.payload,
