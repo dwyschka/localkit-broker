@@ -9,7 +9,7 @@ const aedes = new Aedes({
 });
 
 const regEx = /d_(.{2,4})_(?<serialNumber>(\d+.\d+))/;
-
+const DEBUG = process.env.DEBUG || false;
 
 const connectedClients = new ClientManager();
 // Configuration
@@ -85,8 +85,10 @@ aedes.authenticate = async (client, username, password, callback) => {
         clients[client.id] = data.data.topics;
 
     } catch (error) {
-        console.log('Error fetching topics', username, client.id);
-        console.log(error);
+        if(DEBUG) {
+            console.log('Error fetching topics', username, client.id);
+            console.log(error);
+        }
     }
     callback(null, true);
 };
@@ -151,9 +153,9 @@ connectedClients.on('clientRemoved', (client, allClients) => {
 
 async function sendConnectionStatus(client, state) {
     if (state) {
-        connectedClients.addClient(client)
-    } else {
-        connectedClients.removeClient(client)
-    }
+        return connectedClients.addClient(client);
+    } 
+    return connectedClients.removeClient(client);
+    
 }
 
