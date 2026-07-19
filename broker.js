@@ -8,7 +8,7 @@ const aedes = new Aedes({
     protocolVersion: 4,
 });
 
-const regEx = /d_(.{2,4})_(?<serialNumber>(\d+.\d+))/;
+const regEx = /d_(.{2,4})_(?<serialNumber>[^|]+)/;
 const DEBUG = process.env.DEBUG || false;
 
 const connectedClients = new ClientManager();
