@@ -8,7 +8,7 @@ const aedes = new Aedes({
     protocolVersion: 4,
 });
 
-const regEx = /d_(.{2,4})_(?<serialNumber>[^|]+)/;
+const regEx = /d_(.{2,4})_(?<serialNumber>(\d+.\d+))/;
 const DEBUG = process.env.DEBUG || false;
 
 const connectedClients = new ClientManager();
@@ -59,6 +59,7 @@ process.on('SIGTERM', handleExit);
 aedes.authenticate = async (client, username, password, callback) => {
 
     try {
+        console.log(`Connected: ${username}`);
         const match = username.match(regEx);
         const serialNumber = match.groups.serialNumber;
 
